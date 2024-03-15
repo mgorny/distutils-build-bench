@@ -1,0 +1,50 @@
+\documentclass[tikz, border=.5cm]{standalone}
+\usepackage{ifthen}
+\usepackage{siunitx}
+
+\begin{document}
+
+\newcommand\scalea{.5}
+\newcommand\scaleb{.1}
+
+\begin{tikzpicture}
+	\newcommand\mybar[8]{
+		\node at (0, #1) {#2};
+		\path[draw=#3, fill=#3!10] (-2.5, #1 - .25) rectangle ++(-#4 * \scalea, .5);
+		\node[left] at (-2.5, #1) {\ang{;;#4}};
+		\ifthenelse{\equal{#6}{0}}{}{
+			\path[draw=#5, fill=#5!10] (-2.52 - #4 * \scalea, #1 - .25) rectangle ++(-#6 * \scalea, .5);
+			\ifthenelse{\lengthtest{#6 cm < 1 cm}}{
+				\node[left] at (-2.52 - #4 * \scalea - #6 * \scalea, #1) {\ang{;;#6}};
+			}{
+				\node[left] at (-2.52 - #4 * \scalea, #1) {\ang{;;#6}};
+			}
+		}
+
+		\ifthenelse{\equal{#8}{0}}{
+			\path[draw=#3, fill=#3!10] (2.5, #1 - .25) rectangle ++(#7 * \scaleb, .5);
+		}{
+			\path[draw=#5, fill=#5!10] (2.5, #1 - .25) rectangle ++(#7 * \scaleb, .5);
+			\path[draw=#3, fill=#3!10] (2.52 + #7 * \scaleb, #1 - .25) rectangle ++(#8 * \scaleb, .5);
+			\ifthenelse{\lengthtest{#8 cm < 5 cm}}{
+				\node[right] at (2.52 + #7 * \scaleb + #8 * \scaleb, #1) {\ang{;;#8}};
+			}{
+				\node[right] at (2.52 + #7 * \scaleb, #1) {\ang{;;#8}};
+			}
+		}
+
+		\node[right] at (2.5, #1) {\ang{;;#7}};
+	}
+
+	\node[left] at (-2.5, .6) {Django 5.0.3};
+	\node[right] at (2.5, .6) {Cython 3.0.9};
+
+	\mybar{0}{Serial PEP517 build}{red}{5.39}{}{0}{46.69}{0}
+	\mybar{-.75}{\texttt{build} + PEP517}{red}{5.33}{orange}{3.08}{20.8}{2.69}
+	\mybar{-1.5}{\texttt{build\_ext} + PEP517}{red}{5.41}{green}{0.6}{20.8}{2.69}
+	\mybar{-2.25}{\texttt{find} + \texttt{build\_ext} + PEP517}{red}{5.39}{blue}{0.06}{20.9}{2.69}
+	\mybar{-3}{Parallel PEP517 build}{violet}{5.39}{}{0}{22.8}{0}
+
+\end{tikzpicture}
+
+\end{document}
